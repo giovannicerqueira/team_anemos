@@ -1,3 +1,3 @@
 # team_anemos
-Repo for all code related to Senior Design Project
+Repo for all code related to Senior Design Project (Team Anemos)
 
