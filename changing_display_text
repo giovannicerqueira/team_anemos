@@ -36,11 +36,11 @@ void loop(){
 
    if (flag == 1) {
     flag = 0;
-    display.print("Hello Zero!"); //print
+    display.print(distance); //print
   }
   else{
     flag = 1;
-    display.print("Hello One!"); //print
+    display.print(distance); //print
   }
 delay (500);
 display.fillScreen(BLACK);
