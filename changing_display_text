@@ -1,0 +1,49 @@
+#include "Arduino_GigaDisplay_GFX.h"
+
+GigaDisplay_GFX display; // create the object
+
+#define BLACK 0x0000
+int flag = 0;
+
+const int trigPin = 9;  
+const int echoPin = 10; 
+float duration, distance;
+
+void setup() {
+
+  pinMode(trigPin, OUTPUT);  
+	pinMode(echoPin, INPUT);  
+	Serial.begin(9600);  
+
+  display.begin(); //init library
+  display.fillScreen(BLACK);
+  display.setCursor(10,10); //x,y
+  display.setTextSize(5); //adjust text size
+  display.print("Hello World!"); //print
+}
+void loop(){
+  digitalWrite(trigPin, LOW);
+  delayMicroseconds(2);
+  digitalWrite(trigPin, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trigPin, LOW);
+
+  duration = pulseIn(echoPin, HIGH);
+  distance = (duration*.0343)/2;
+  Serial.print("Distance: ");
+  Serial.println(distance);
+  delay(100);
+
+   if (flag == 1) {
+    flag = 0;
+    display.print("Hello Zero!"); //print
+  }
+  else{
+    flag = 1;
+    display.print("Hello One!"); //print
+  }
+delay (500);
+display.fillScreen(BLACK);
+display.setCursor(10,10); //x,y
+display.setTextSize(5);
+}
