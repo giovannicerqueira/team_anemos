@@ -3,47 +3,64 @@
 GigaDisplay_GFX display; // create the object
 
 #define BLACK 0x0000
-int flag = 0;
 
-const int trigPin = 9;  
-const int echoPin = 10; 
-float duration, distance;
+//
+#define analogPin A0
+
+float VDD = 3.3;
+//
 
 void setup() {
+  Serial.begin(9600);
 
-  pinMode(trigPin, OUTPUT);  
-	pinMode(echoPin, INPUT);  
-	Serial.begin(9600);  
 
   display.begin(); //init library
+  /*
   display.fillScreen(BLACK);
   display.setCursor(10,10); //x,y
   display.setTextSize(5); //adjust text size
   display.print("Hello World!"); //print
+  */
 }
 void loop(){
-  digitalWrite(trigPin, LOW);
-  delayMicroseconds(2);
-  digitalWrite(trigPin, HIGH);
-  delayMicroseconds(10);
-  digitalWrite(trigPin, LOW);
 
-  duration = pulseIn(echoPin, HIGH);
-  distance = (duration*.0343)/2;
-  Serial.print("Distance: ");
-  Serial.println(distance);
-  delay(100);
+int sensorValue = analogRead(analogPin);
 
-   if (flag == 1) {
-    flag = 0;
-    display.print(distance); //print
+  float mappedVoltage = sensorValue/(1023/VDD);
+
+  //int mappedVoltage = map(sensorValue, 0, 1023, 0, VDD);
+
+  int DP = (750 * mappedVoltage / VDD) - 150;
+
+  if (DP < 0) {
+    DP = 0;
   }
-  else{
-    flag = 1;
-    display.print(distance); //print
-  }
-delay (500);
-display.fillScreen(BLACK);
-display.setCursor(10,10); //x,y
-display.setTextSize(5);
+
+  float windSpeed = sqrt(2 * DP / (1.204));
+
+  // Print the value to the Serial Monitor
+  Serial.print("Analog value: ");
+  Serial.println(sensorValue);
+  //Serial.println(mappedVoltage);
+  Serial.print("Differential Pressure: ");
+  Serial.println(DP);
+  Serial.print("Calculated Wind Speed: ");
+  Serial.println(windSpeed);
+
+  
+  // Wait a bit before the next loop
+  //delay(1000); // Delay in milliseconds
+
+  display.print("Analog value: ");
+  display.print(sensorValue);
+  display.print("        ");
+  display.print("Differential Pressure: ");
+  display.print(DP);
+  display.print("        ");
+  display.print("Calculated Wind Speed: ");
+  display.print(windSpeed);
+  delay (500);
+  display.fillScreen(BLACK);
+  display.setCursor(10,10); //x,y
+  display.setTextSize(5);
 }
